@@ -465,17 +465,15 @@ jobs:
         crave run --no-patch --${CLEAN} "rm -rf .repo/local_manifests/ ${{ github.event.inputs.REMOVALS }} && \
         $BUILD_DIFFERENT_ROM ; \
         $LOCAL_MANIFEST && \
-        /opt/crave/resync.sh  && \
-        source build/envsetup.sh && \
+        /opt/crave/resync.sh ; \
+        source build/envsetup.sh ; \
         export BUILD_USERNAME=${{ github.actor }} ; \
         export BUILD_HOSTNAME=foss.crave.io ; \
         export TZ=Asia/Jakarta ; \
-
-        echo "Repository: ${{ github.repository }}"; \
-        echo "Run ID: ${{ github.run_id }}"; \
-
-        # Build the ROM
-        $LUNCH && \
+        echo "Repository: ${{ github.repository }}" ; \
+        echo "Run ID: ${{ github.run_id }}" ; \
+        $LUNCH ; \
+        make installclean ; \
         ${{ github.event.inputs.BUILD_COMMAND }}"
       timeout-minutes: 1440
 
