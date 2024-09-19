@@ -467,13 +467,13 @@ jobs:
         $LOCAL_MANIFEST && \
         /opt/crave/resync.sh ; \
         source build/envsetup.sh ; \
+        echo "Repository: ${{ github.repository }}" ; \
+        echo "Run ID: ${{ github.run_id }}" ; \
+        $LUNCH ; \
         export BUILD_USERNAME=${{ github.actor }} ; \
         export BUILD_HOSTNAME=foss.crave.io ; \
         export TZ=Asia/Jakarta ; \
         export TARGET_BOARD_PLATFORM=msm8953 ; \
-        echo "Repository: ${{ github.repository }}" ; \
-        echo "Run ID: ${{ github.run_id }}" ; \
-        $LUNCH ; \
         make installclean ; \
         ${{ github.event.inputs.BUILD_COMMAND }}"
       timeout-minutes: 1440
