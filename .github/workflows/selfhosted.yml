@@ -36,7 +36,8 @@ on:
         required: false
       LOCAL_MANIFEST:
         description: "Personal local manifest [repository or raw]:"
-        r     default: 'https://github.com/Rsyd58/Manifest'
+        required: true
+        default: 'https://github.com/Rsyd58/Manifest'
       LOCAL_MANIFEST_BRANCH:
         description: "Personal local manifest's branch:"
         required: false
@@ -462,24 +463,21 @@ jobs:
 
 
         crave run --no-patch --${CLEAN} "rm -rf .repo/local_manifests/ ${{ github.event.inputs.REMOVALS }} && \
-        # Clone local_manifests repository
         $BUILD_DIFFERENT_ROM ; \
         $LOCAL_MANIFEST && \
-
-        # Sync the repositories
-        /opt/crave/resync.sh  && \
-
-        # Set up build environment
+        /opt/crave/resync.sh ; \
+        export PIXELAGE_BUILD="vince" ; \
+        . build/envsetup.sh ; \
+        echo "Repository: ${{ github.repository }}" ; \
+        echo "Run ID: ${{ github.run_id }}" ; \
+        export PIXELAGE_BUILD="vince" ; \
+        $LUNCH ; \
         export BUILD_USERNAME=${{ github.actor }} ; \
-        export BUILD_HOSTNAME=crave ; \
-        source build/envsetup.sh && \
-
-        echo "Repository: ${{ github.repository }}"; \
-        echo "Run ID: ${{ github.run_id }}"; \
-
-        # Build the ROM
-        $LUNCH && \
-        make installclean && \
+        export BUILD_HOSTNAME=foss.crave.io ; \
+        export TZ=Asia/Jakarta ; \
+        export TARGET_BOARD_PLATFORM=msm8953 ; \
+        export PIXELAGE_BUILD="vince" ; \
+        make installclean ; \
         ${{ github.event.inputs.BUILD_COMMAND }}"
       timeout-minutes: 1440
 
