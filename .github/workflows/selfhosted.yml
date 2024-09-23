@@ -30,7 +30,7 @@ on:
       BUILD_DIFFERENT_ROM:
         description: "Command to initialize a different 'repo' project:"
         required: false
-        default: "repo init -u https://github.com/yaap/manifest.git -b fifteen --git-lfs"
+        default: "repo init -u https://github.com/c0smic-Lab/manifest -b 15 --git-lfs"
       REMOVALS:
         description: "Folders to be removed before syncing:"
         required: false
@@ -41,7 +41,7 @@ on:
       LOCAL_MANIFEST_BRANCH:
         description: "Personal local manifest's branch:"
         required: false
-        default: 'pixelage-15'
+        default: '15'
       DEVICE_NAME:
         description: "Device's codename:"
         required: true
@@ -49,15 +49,15 @@ on:
       PRODUCT_NAME:
         description: "Product to build:"
         required: true
-        default: "yaap_vince"
+        default: "aosp_vince-ap3a"
       BUILD_COMMAND:
         description: 'Command to be used for compiling:'
         required: true
-        default: 'm yaap'
+        default: 'mka bacon'
       BUILD_TYPE:
         description: 'Type of build:'
         required: true
-        default: 'userdebug'
+        default: 'user'
         type: choice
         options: 
         - 'eng'
@@ -66,7 +66,7 @@ on:
       CLEAN_BUILD:
         description: 'Build with a clean workspace?'
         required: true
-        default: 'yes'
+        default: 'no'
         type: choice
         options: 
         - 'yes'
@@ -483,6 +483,7 @@ jobs:
         export BUILD_HOSTNAME=foss.crave.io ; \
         export TZ=Asia/Jakarta ; \
         export TARGET_BOARD_PLATFORM=msm8953 ; \
+        ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime ; \
         make installclean ; \
         ${{ github.event.inputs.BUILD_COMMAND }}"
       timeout-minutes: 1440
