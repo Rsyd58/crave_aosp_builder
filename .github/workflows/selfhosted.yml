@@ -30,26 +30,26 @@ on:
       BUILD_DIFFERENT_ROM:
         description: "Command to initialize a different 'repo' project:"
         required: false
-        default: "echo 'Build Starting!'"
+        default: "repo init --depth=1 --no-repo-verify --git-lfs -u https://github.com/ProjectInfinity-X/manifest -b QPR3 -g default,-mips,-darwin,-notdefault"
       REMOVALS:
         description: "Folders to be removed before syncing:"
         required: false
       LOCAL_MANIFEST:
         description: "Personal local manifest [repository or raw]:"
         required: true
-        default: 'https://github.com/sounddrill31/local_manifests_oxygen'
+        default: 'https://github.com/Rsyd58/Manifest'
       LOCAL_MANIFEST_BRANCH:
         description: "Personal local manifest's branch:"
         required: false
-        default: 'lineage-21-qpr3'
+        default: '14-inf'
       DEVICE_NAME:
         description: "Device's codename:"
         required: true
-        default: "oxygen"
+        default: "vince"
       PRODUCT_NAME:
         description: "Product to build:"
         required: true
-        default: "oxygen"
+        default: "infinity_vince"
       BUILD_COMMAND:
         description: 'Command to be used for compiling:'
         required: true
@@ -57,7 +57,7 @@ on:
       BUILD_TYPE:
         description: 'Type of build:'
         required: true
-        default: 'userdebug'
+        default: 'user'
         type: choice
         options: 
         - 'eng'
@@ -472,24 +472,19 @@ jobs:
 
 
         crave run --no-patch --${CLEAN} "rm -rf .repo/local_manifests/ ${{ github.event.inputs.REMOVALS }} && \
-        # Clone local_manifests repository
         $BUILD_DIFFERENT_ROM ; \
         $LOCAL_MANIFEST && \
-
-        # Sync the repositories
-        /opt/crave/resync.sh  && \
-
-        # Set up build environment
+        /opt/crave/resync.sh ; \
+        source build/envsetup.sh ; \
+        echo "Repository: ${{ github.repository }}" ; \
+        echo "Run ID: ${{ github.run_id }}" ; \
+        $LUNCH ; \
         export BUILD_USERNAME=${{ github.actor }} ; \
-        export BUILD_HOSTNAME=crave ; \
-        source build/envsetup.sh && \
-
-        echo "Repository: ${{ github.repository }}"; \
-        echo "Run ID: ${{ github.run_id }}"; \
-
-        # Build the ROM
-        $LUNCH && \
-        make installclean && \
+        export BUILD_HOSTNAME=foss.crave.io ; \
+        export TZ=Asia/Jakarta ; \
+        export TARGET_BOARD_PLATFORM=msm8953 ; \
+        ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime ; \
+        make installclean ; \
         ${{ github.event.inputs.BUILD_COMMAND }}"
       timeout-minutes: 1440
 
